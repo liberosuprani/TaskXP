@@ -10,6 +10,9 @@ import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import './pages/today_tasks_page.dart';
 
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);

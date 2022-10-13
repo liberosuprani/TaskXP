@@ -8,15 +8,6 @@ class Tarefas with ChangeNotifier {
   late List<Tarefa> _itens = [];
   List<Tarefa> _lixeira = [];
 
-  Tarefas() {
-    _initRepository();
-  }
-  _initRepository() async {
-    _itens = await DB.instance.lerTodasTarefas('tarefa');
-    _lixeira = await DB.instance.lerTodasTarefas('lixeira');
-    notifyListeners();
-  }
-
   List<Tarefa> get itens {
     return [..._itens];
   }
@@ -47,7 +38,6 @@ class Tarefas with ChangeNotifier {
 
   void adicionarTarefa(String titulo, DateTime data, String descricao){
     final t = Tarefa(titulo: titulo, data: data, descricao: descricao);
-    DB.instance.criarTarefa('tarefa', t);
     _itens.add(t);
 
     notifyListeners();
@@ -65,14 +55,10 @@ class Tarefas with ChangeNotifier {
     );
     _itens.insert(_itens.indexOf(t), compraEditada);
     _itens.remove(t);
-    DB.instance.update('tarefa', compraEditada);
-
     notifyListeners();
   }
 
   void moverPraLixeira(Tarefa c) {
-    DB.instance.criarTarefa('lixeira', c);
-    DB.instance.delete('tarefa', c.id!);
     _lixeira.add(c);
     _itens.remove(c);
 
@@ -80,8 +66,6 @@ class Tarefas with ChangeNotifier {
   }
 
   void resgatarTarefa(Tarefa t) {
-    DB.instance.criarTarefa('tarefa', t);
-    DB.instance.delete('lixeira', t.id!);
     _lixeira.remove(t);
     _itens.add(t);
 
@@ -89,7 +73,6 @@ class Tarefas with ChangeNotifier {
   }
 
   void removerTarefa(Tarefa c) {
-    DB.instance.delete('lixeira', c.id!);
     _lixeira.remove(c);
 
     notifyListeners();
@@ -97,7 +80,6 @@ class Tarefas with ChangeNotifier {
 
   void changeFinalizado(Tarefa c, bool finalizado) {
     c.finalizado = finalizado;
-    DB.instance.update('tarefa', c);
 
     notifyListeners();
   }
