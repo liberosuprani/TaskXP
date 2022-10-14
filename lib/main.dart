@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:task_xp_app/pages/removed_tasks_page.dart';
+import './pages/removed_tasks_page.dart';
 import './pages/all_tasks_page.dart';
 import './pages/done_tasks_page.dart';
 import './pages/login_page.dart';
@@ -13,9 +13,14 @@ import './pages/today_tasks_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
   runApp(MyApp());
 }
 
@@ -42,8 +47,6 @@ class MyApp extends StatelessWidget {
         },
       ),
     );
-
-
   }
 }
 

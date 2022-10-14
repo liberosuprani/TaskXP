@@ -40,6 +40,8 @@ dependencies:
   animations: ^2.0.5
   path: ^1.8.1
   firebase_core: ^1.24.0
+  get: ^4.6.5
+  firebase_auth: ^3.11.2
 
 dev_dependencies:
   flutter_test:

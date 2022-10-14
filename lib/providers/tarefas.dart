@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
-import '../database/db.dart';
 import '../models/tarefa.dart';
 
 class Tarefas with ChangeNotifier {

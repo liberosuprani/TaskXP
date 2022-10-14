@@ -67,7 +67,42 @@ class _PopUpMenuState extends State<PopUpMenu> {
       ],
       onSelected: (value) {
         if (value == 1) {
-          esvaziar(widget.lista, listaData.removerTarefa);
+          if (listaData.lixeira.length > 0) {
+            showDialog(context: context, builder: (bCtx) {
+              return AlertDialog(
+                title: const Text(
+                    'Todas as tarefas serão excluídas permanentemente.\n\nVocê tem certeza?'),
+                content: SingleChildScrollView(
+                  child: Container(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    ),
+                  ),
+                ),
+                actionsAlignment: MainAxisAlignment.start,
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        Navigator.of(bCtx).pop();
+                      });
+                      esvaziar(widget.lista, listaData.removerTarefa);
+                    },
+                    child: Text('OK'),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        Navigator.of(bCtx).pop();
+                      });
+                    },
+                    child: Text(
+                      'Cancelar', style: TextStyle(color: Colors.red),),
+                  ),
+                ],
+              );
+            });
+          }
         }
         if (value == 2) {
           resgatar(widget.lista, listaData.resgatarTarefa);

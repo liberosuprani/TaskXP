@@ -58,7 +58,7 @@ class _ListaDeTarefasState extends State<ListaDeTarefas> {
                   color: Color(0xFF5C5C5E),
                   elevation: 7.5,
                   child: Slidable(
-                    endActionPane: ActionPane(
+                    startActionPane: ActionPane(
                       motion: DrawerMotion(),
                       children: [
                         SlidableAction(  // DELETAR TAREFA
@@ -114,7 +114,7 @@ class _ListaDeTarefasState extends State<ListaDeTarefas> {
               color: Color(0xFF5C5C5E),
               elevation: 7.5,
               child: Slidable(
-                endActionPane: ActionPane(
+                startActionPane: ActionPane(
                   motion: DrawerMotion(),
                   children: [
                     SlidableAction(  // RECUPERAR TAREFA

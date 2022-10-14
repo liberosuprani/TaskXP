@@ -154,7 +154,7 @@ class _HomePageState extends State<HomePage> {
                                 fit: BoxFit.scaleDown,
                                 alignment: Alignment.topRight,
                                 child: Text(
-                                  '${listaData.lixeira.length}',
+                                  '${listaData.concluidas.length}',
                                   style: TextStyle(color: Color(0xFF414746), fontSize: 25),
                                 ),
                               ),
