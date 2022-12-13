@@ -5,9 +5,11 @@ import '../providers/tarefas.dart';
 
 class ChartBar extends StatefulWidget {
 
-  final int totalCompleto;
+  final int? totalGeral;
+  final int? totalCompleto;
 
-  ChartBar(this.totalCompleto);
+
+  ChartBar(this.totalGeral, this.totalCompleto);
 
   @override
   State<ChartBar> createState() => _ChartBarState();
@@ -18,15 +20,15 @@ class _ChartBarState extends State<ChartBar> {
   @override
 
   Widget build(BuildContext context) {
-    final tamanhoLista = Provider.of<Tarefas>(context).itens.length;
+    final tamanhoLista = widget.totalGeral;
     double tamanhoBarra;
     double tamanhoTotalBarra = 300;
     double porcentagem = 0;
     if (widget.totalCompleto == 0)
       tamanhoBarra = 0;
     else {
-      tamanhoBarra = (widget.totalCompleto * tamanhoTotalBarra) / tamanhoLista;
-      porcentagem = (widget.totalCompleto * 100) / tamanhoLista;
+      tamanhoBarra = (widget.totalCompleto! * tamanhoTotalBarra) / tamanhoLista!;
+      porcentagem = (widget.totalCompleto! * 100) / tamanhoLista;
     }
     return Row(
       mainAxisSize: MainAxisSize.min,

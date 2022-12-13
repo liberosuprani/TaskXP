@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:task_xp_app/services/FirestoreService.dart';
 import '../models/tarefa.dart';
 
 class EditorDeTarefa extends StatefulWidget {
 
-  final Function editarTarefa;
+  final String collectionPath;
   final Tarefa tarefa;
 
-  EditorDeTarefa(this.editarTarefa, this.tarefa);
+  EditorDeTarefa(this.tarefa, {this.collectionPath = 'allTasks'});
 
   @override
   State<EditorDeTarefa> createState() => _EditorDeTarefaState();
 }
 
 class _EditorDeTarefaState extends State<EditorDeTarefa> {
+
+  FirestoreService service = FirestoreService();
 
   Future<DateTime> mostraDatePicker(BuildContext context, dataAnterior) async {
     var dataSelecionada = await showDatePicker(
@@ -32,7 +35,6 @@ class _EditorDeTarefaState extends State<EditorDeTarefa> {
   late final tituloController = TextEditingController(text: widget.tarefa.titulo);
   late final descricaoController = TextEditingController(text: widget.tarefa.descricao);
   late DateTime dataController = widget.tarefa.data;
-  late final int? id = widget.tarefa.id;
 
   @override
   Widget build(BuildContext context) {
@@ -82,13 +84,14 @@ class _EditorDeTarefaState extends State<EditorDeTarefa> {
       actions: [
         TextButton(
           onPressed: () {
-            widget.editarTarefa(
-              widget.tarefa,
-              tituloController.text,
-              dataController,
-              descricaoController.text,
-              widget.tarefa.finalizado
+            Tarefa t = Tarefa(
+                id: widget.tarefa.id,
+                finalizado: widget.tarefa.finalizado,
+                titulo: tituloController.text,
+                data: dataController,
+                descricao: descricaoController.text
             );
+            service.changeItem(t, collectionPath: widget.collectionPath);
             setState((){
               Navigator.pop(context);
             });

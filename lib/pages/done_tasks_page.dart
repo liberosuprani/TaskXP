@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
+import 'package:task_xp_app/widgets/popupmenu.dart';
 import '../widgets/my_fab.dart';
 import '../providers/tarefas.dart';
 import '../widgets/lista_de_tarefas.dart';
@@ -21,6 +21,9 @@ class _DoneTasksPageState extends State<DoneTasksPage> {
     final appBar = AppBar(
       title: const Text('Concluídas'),
       backgroundColor: Color(0xFF3E3E3E),
+      actions: [
+        PopUpMenu(collectionPath: 'doneTasks'),
+      ],
     );
     return SafeArea(
       child: Scaffold(
@@ -31,17 +34,7 @@ class _DoneTasksPageState extends State<DoneTasksPage> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
             Chart(),
-            lista.isEmpty ?
-            Flexible(
-              fit: FlexFit.loose,
-              child: Column(
-                children: const [
-                  SizedBox(height: 50,),
-                  Center(child: Text('Você não possui nenhuma tarefa!', style: TextStyle(fontSize: 20, color: Colors.white), )),
-                ],
-              ),
-            )
-                : ListaDeTarefas(listaData.concluidas),
+            ListaDeTarefas('doneTasks'),
           ],
         ),
         floatingActionButton: const MyFab(),

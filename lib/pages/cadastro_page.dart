@@ -1,5 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'login_page.dart';
 
 class CadastroPage extends StatefulWidget {
   @override
@@ -8,6 +9,60 @@ class CadastroPage extends StatefulWidget {
 
 class _CadastroPage extends State<CadastroPage>{
 
+  bool _showPassword = false;
+  bool _showConfirmPassword = false;
+
+  TextEditingController nomeController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController senhaController = TextEditingController();
+  TextEditingController confirmarSenhaController = TextEditingController();
+
+  String emailValidator = '';
+  String senhaValidator = '';
+  String confirmarSenhaValidator = '';
+
+  String? mensagem = '';
+
+  bool validator() {
+    bool ok = true;
+    if (senhaController.text != confirmarSenhaController.text) {
+      mensagem = 'As senhas não são iguais';
+      ok = false;
+    }
+    if (senhaController.text.isEmpty || senhaController.text.length < 6 ) {
+      senhaValidator = 'A senha deve ter pelo menos 6 caracteres';
+      ok = false;
+    }
+    if (emailController.text.isEmpty || !emailController.text.contains('@')) {
+      mensagem = 'Email válido';
+      ok = false;
+    }
+    return ok;
+  }
+
+  final _auth = FirebaseAuth.instance;
+  void _submitForm(String nome, String email, String senha) async {
+    UserCredential userCredential;
+    try {
+      userCredential = await _auth.signInWithEmailAndPassword(email: email, password: senha);
+      Navigator.of(context).pop();
+    } on FirebaseAuthException catch (error) {
+      if (error.code == 'wrong-password') {
+        print('PIROCAO DURO LISO---------------------------');
+        setState(() {
+          mensagem = 'Esse email já está em uso';
+        });
+      }
+      else {
+        userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: senha);
+        FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+          'uid' : userCredential.user!.uid,
+          'username' : nome,
+          'email' : email,
+        });
+      }
+    }
+  }
 
   Widget buildCadastro(){
     return Container(
@@ -16,12 +71,18 @@ class _CadastroPage extends State<CadastroPage>{
       child: RaisedButton(
         elevation: 5,
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => LoginPage(
-                )),
-          );
+          emailValidator = '';
+          senhaValidator = '';
+          confirmarSenhaValidator = '';
+          mensagem = '';
+          if(!validator()) {
+            setState((){});
+          }
+          else {
+            setState((){
+              _submitForm(nomeController.text.trim(), emailController.text.trim(), senhaController.text.trim());
+            });
+          }
         },
         padding: EdgeInsets.all(15),
         shape: RoundedRectangleBorder(
@@ -61,9 +122,7 @@ class _CadastroPage extends State<CadastroPage>{
                   Color(0xff3d85c6),
                 ])),
         child: SizedBox.expand(
-
           child: ListView(
-
             children: <Widget>[
               SizedBox(
                 height: 30,
@@ -78,29 +137,21 @@ class _CadastroPage extends State<CadastroPage>{
               SizedBox(
                 height: 40,
               ),
-
-              TextFormField(
+              SizedBox(
+                height: 20,
+              ),
+              TextField(
+                controller: nomeController,
                 decoration: const InputDecoration(
-
                   labelText: 'Nome',
                   labelStyle: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
                   ),
                 ),
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
-                },
-                validator: (String? value) {
-                  return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                },
-
               ),
-              SizedBox(
-                height: 20,
-              ),
-              TextFormField(
+              TextField(
+                controller: emailController,
                 decoration: const InputDecoration(
                   labelText: 'E-mail',
                   labelStyle: TextStyle(
@@ -108,61 +159,54 @@ class _CadastroPage extends State<CadastroPage>{
                     color: Colors.white,
                   ),
                 ),
-
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
-                },
-                validator: (String? value) {
-                  return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                },
               ),
               SizedBox(
                 height: 20,
               ),
-              TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
+              TextField(
+                controller: senhaController,
+                obscureText: _showPassword == false ? true : false,
+                decoration: InputDecoration(
                   labelText: 'Senha',
                   labelStyle: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
                   ),
+                  suffixIcon: GestureDetector(
+                      child: Icon(_showPassword == false? Icons.visibility_off: Icons.visibility, color: Colors.black26),
+                      onTap: () {
+                        setState((){
+                          _showPassword = !_showPassword;
+                        });
+                      }
+                  ),
                 ),
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
-                },
-                validator: (String? value) {
-                  return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                },
               ),
               SizedBox(
                 height: 20,
               ),
-              TextFormField(
-                obscureText: true,
-                decoration: const InputDecoration(
+              TextField(
+                controller: confirmarSenhaController,
+                obscureText: _showConfirmPassword == false ? true : false,
+                decoration: InputDecoration(
                   labelText: 'Confirmar Senha',
                   labelStyle: TextStyle(
                     fontSize: 18,
                     color: Colors.white,
                   ),
+                  suffixIcon: GestureDetector(
+                      child: Icon(_showConfirmPassword == false? Icons.visibility_off: Icons.visibility, color: Colors.black26),
+                      onTap: () {
+                        setState((){
+                          _showConfirmPassword = !_showConfirmPassword;
+                        });
+                      }
+                  ),
                 ),
-                onSaved: (String? value) {
-                  // This optional block of code can be used to run
-                  // code when the user saves the form.
-                },
-                validator: (String? value) {
-                  return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-                },
               ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                height: 40,
-              ),
+              SizedBox(height: 10,),
+              Text(mensagem!, style: TextStyle(color: Colors.red)),
+              SizedBox(height: 20,),
               buildCadastro(),
             ],
           ),

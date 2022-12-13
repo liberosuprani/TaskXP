@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'cadastro_page.dart';
 import 'recuperar_senha_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -11,6 +12,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
 
   bool _showPassword = false;
+  bool _isLogin = true;
+
+  TextEditingController emailController = TextEditingController();
+  TextEditingController senhaController = TextEditingController();
+
+  String emailValidator = '';
+  String senhaValidator = '';
 
   Widget buildEmail() {
     return Column(
@@ -33,7 +41,8 @@ class _LoginPageState extends State<LoginPage> {
               ]
           ),
           height: 60,
-          child: const TextField(
+          child: TextField(
+            controller: emailController,
             keyboardType: TextInputType.emailAddress,
             style: TextStyle(color: Colors.black87),
             decoration: InputDecoration(
@@ -46,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               hintText: 'Email',
               hintStyle: TextStyle(color: Colors.black38)
             ),
+
           ),
         ),
       ],
@@ -74,6 +84,7 @@ class _LoginPageState extends State<LoginPage> {
           ),
           height: 60,
           child: TextField(
+            controller: senhaController,
             obscureText: _showPassword == false ? true : false,
             style: const TextStyle(color: Colors.black87),
             decoration: InputDecoration(
@@ -155,15 +166,99 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
+  bool validator() {
+    bool ok = true;
+    if (emailController.text.isEmpty || !emailController.text.contains('@')) {
+      emailValidator = 'Email válido';
+      ok = false;
+    }
+    if (senhaController.text.isEmpty || senhaController.text.length < 6 ) {
+      senhaValidator = 'Senha inválida';
+      ok = false;
+    }
+    return ok;
+  }
+
+  final _auth = FirebaseAuth.instance;
+
+  String? mensagem = '';
+
+  void _submitForm(String email, String senha) async {
+    try {
+      UserCredential userCredential;
+      userCredential = await _auth.signInWithEmailAndPassword(
+          email: emailController.text, password: senhaController.text);
+      Navigator.of(context).pushNamed(
+          '/home_page');
+    }  on FirebaseAuthException catch (error) {
+      if (error.code == 'user-not-found') {
+        showDialog(
+            context: context,
+            builder: (BuildContext bContext) {
+              return AlertDialog(
+                title: Text("Erro de autenticação"),
+                content: Text("Esse usuário não existe."),
+                actions: <Widget>[
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        child: Text("Voltar"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              );
+            });
+      } else if (error.code == 'wrong-password') {
+        showDialog(
+            context: context,
+            builder: (BuildContext bContext) {
+              return AlertDialog(
+                title: Text("Erro de autenticação"),
+                content: Text("Senha incorreta"),
+                actions: <Widget>[
+                  Row(
+                    children: [
+                      ElevatedButton(
+                        child: Text("Voltar"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  )
+                ],
+              );
+            });
+      }
+    }
+  }
+
   Widget buildLoginBtn() {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 25),
       width: double.infinity,
       child: RaisedButton(
         elevation: 5,
-        onPressed: () => Navigator.of(context).pushReplacementNamed(
-          '/home_page',
-        ),
+        onPressed: () {
+          emailValidator = '';
+          senhaValidator = '';
+          mensagem = '';
+          if(!validator()) {
+            setState((){});
+          }
+          else {
+            setState((){
+              emailValidator = '';
+              senhaValidator = '';
+              mensagem = '';
+              _submitForm(emailController.text.trim(), senhaController.text.trim());
+            });
+          }
+        },
         padding: const EdgeInsets.all(15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15)
@@ -247,7 +342,9 @@ class _LoginPageState extends State<LoginPage> {
                     buildEmail(),
                     buildPassword(),
                     buildForgetPassword(),
-                    buildRememberAC(),
+                    Text(emailValidator, style: TextStyle(color: Colors.red),),
+                    Text(senhaValidator, style: TextStyle(color: Colors.red),),
+                    // buildRememberAC(),
                     buildLoginBtn(),
                     buildCadastro(),
                   ],

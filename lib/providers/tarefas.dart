@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:sqflite/sqflite.dart';
+import '../services/FirestoreService.dart';
 import '../models/tarefa.dart';
 
 class Tarefas with ChangeNotifier {
 
+  final service = FirestoreService();
+
   late List<Tarefa> _itens = [];
-  List<Tarefa> _lixeira = [];
+  late List<Tarefa> _lixeira = [];
 
   List<Tarefa> get itens {
     return [..._itens];
@@ -35,12 +37,13 @@ class Tarefas with ChangeNotifier {
     }).toList();
   }
 
+  /*
   void adicionarTarefa(String titulo, DateTime data, String descricao){
-    final t = Tarefa(titulo: titulo, data: data, descricao: descricao);
-    _itens.add(t);
-
-    notifyListeners();
+    final t = Tarefa(id: itens.length, titulo: titulo, data: data, descricao: descricao);
+    service.adicionarTarefa(t, '');
   }
+
+   */
 
   void editarTarefa(Tarefa t, String titulo, DateTime data, String descricao, bool finalizado) {
     if (t.titulo == titulo && t.data.day == data.day && t.data.month == data.month && t.data.year == data.year && t.finalizado == finalizado) {
@@ -58,21 +61,21 @@ class Tarefas with ChangeNotifier {
   }
 
   void moverPraLixeira(Tarefa c) {
-    _lixeira.add(c);
+    //_lixeira.add(c);
     _itens.remove(c);
 
     notifyListeners();
   }
 
   void resgatarTarefa(Tarefa t) {
-    _lixeira.remove(t);
+    //_lixeira.remove(t);
     _itens.add(t);
 
     notifyListeners();
   }
 
   void removerTarefa(Tarefa c) {
-    _lixeira.remove(c);
+    //_lixeira.remove(c);
 
     notifyListeners();
   }

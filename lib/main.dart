@@ -1,4 +1,6 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:task_xp_app/services/FirestoreService.dart';
 import './pages/removed_tasks_page.dart';
 import './pages/all_tasks_page.dart';
 import './pages/done_tasks_page.dart';
@@ -9,17 +11,12 @@ import './providers/tarefas.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter/services.dart';
 import './pages/today_tasks_page.dart';
-
 import 'package:firebase_core/firebase_core.dart';
-import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
 
   runApp(MyApp());
 }
@@ -27,15 +24,26 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (ctx) => Tarefas(),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider.value(value: Tarefas()),
+        StreamProvider.value(value: FirestoreService().lerTarefas(collectionPath: '/tasks'), initialData: null,)
+      ],
       child: MaterialApp(
+        home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (ctx, userSnapshot) {
+          if (userSnapshot.hasData) {
+            return HomePage();
+          }
+          else {
+            return LoginPage();
+          }
+        } ,),
         debugShowCheckedModeBanner: false,
         title: 'TaskXP',
         theme: ThemeData(
           primarySwatch: Colors.blueGrey,
         ),
-        initialRoute: '/home_page',
+        // initialRoute: '/login_page',
         routes: {
           '/login_page' : (context) => LoginPage(),
           '/home_page' : (context) => const HomePage(),

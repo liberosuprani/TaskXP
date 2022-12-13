@@ -15,7 +15,7 @@ class MyFab extends StatelessWidget {
       backgroundColor: Color(0XFF6B86FF),
       onPressed: () {
         showModalBottomSheet(context: context, builder: (bCtx) {
-          return NovaTarefa(listaData.adicionarTarefa);
+          return NovaTarefa();
         });
       },
     );

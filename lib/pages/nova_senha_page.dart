@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'recuperar_senha_page.dart';
 import 'login_page.dart';
 
 class NovaSenhaPage extends StatelessWidget {

@@ -1,8 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:task_xp_app/services/FirestoreService.dart';
 
 class MyDrawer extends StatelessWidget {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+
+  final _userUid = FirebaseAuth.instance.currentUser!.uid;
+  final usersRef = FirebaseFirestore.instance.collection('/users');
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +23,7 @@ class MyDrawer extends StatelessWidget {
               currentAccountPicture: CircleAvatar(
                 child: Text('Imagem'),
               ),
-              accountName: Text('Nome'),
+              accountName: Text('nome'),
               accountEmail: Text('nome@gmail.com'),
             ),
             Column(children: [
@@ -77,8 +83,47 @@ class MyDrawer extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.settings, color: Colors.white),
-                title: const Text('Configurações', style: TextStyle(color: Colors.white),),
+                leading: const Icon(Icons.logout, color: Colors.white),
+                title: const Text('Sair da conta', style: TextStyle(color: Colors.white),),
+                onTap: (){
+                  showDialog(context: context, builder: (bCtx) {
+                    return StatefulBuilder(
+                      builder: (context, setState) {
+                        return AlertDialog(
+                          title: const Text('Você tem certeza que deseja sair?'),
+                          content: SingleChildScrollView(
+                            child: Container(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              ),
+                            ),
+                          ),
+                          actionsAlignment: MainAxisAlignment.start,
+                          actions: [
+                            TextButton(
+                              onPressed: () {
+                                setState(() async {
+                                  FirebaseAuth.instance.signOut();
+                                  Navigator.of(context).pop();
+                                  Navigator.of(context).pushReplacementNamed('/login_page');
+                                });
+                              },
+                              child: Text('OK'),
+                            ),
+                            TextButton(
+                              onPressed: () {
+                                setState(() => Navigator.of(context).pop());
+                              },
+                              child: Text(
+                                'Cancelar', style: TextStyle(color: Colors.red),),
+                            ),
+                          ],
+                        );
+                      }
+                    );
+                  });
+
+                },
               ),
             ],),
 
