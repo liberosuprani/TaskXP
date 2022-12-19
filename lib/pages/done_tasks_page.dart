@@ -15,9 +15,6 @@ class _DoneTasksPageState extends State<DoneTasksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final listaData = Provider.of<Tarefas>(context);
-    final lista = listaData.concluidas;
-
     final appBar = AppBar(
       title: const Text('Concluídas'),
       backgroundColor: Color(0xFF3E3E3E),

@@ -15,9 +15,6 @@ class _AllTasksPageState extends State<AllTasksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final listaData = Provider.of<Tarefas>(context);
-    final lista = listaData.itens;
-
     final appBar = AppBar(
       title: const Text('Todas as tarefas'),
       backgroundColor: Color(0xFF3E3E3E),

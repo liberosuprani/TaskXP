@@ -1,17 +1,33 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'nova_senha_page.dart';
+import 'package:basic_utils/basic_utils.dart';
 
-class RecuperarSenhaPage extends StatelessWidget {
-  final String name;
+class RecuperarSenhaPage extends StatefulWidget {
 
-  const RecuperarSenhaPage({
-    Key? key,
-    required this.name,
+  @override
+  State<RecuperarSenhaPage> createState() => _RecuperarSenhaPageState();
+}
 
-  }) : super(key: key);
+class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
+  TextEditingController emailController = TextEditingController();
+
+  String erro = '';
+
+  Future resetPassword() async {
+    try {
+      await FirebaseAuth.instance.sendPasswordResetEmail(email: emailController.text.trim());
+      erro = 'Link de recuperação enviado ao email';
+    } on FirebaseAuthException catch (e) {
+      erro = e.message!;
+      print(e.code);
+    }
+  }
 
   @override
   Widget build(BuildContext context) => Scaffold(
+
+
     appBar: AppBar(
       title: const Text("Tela de Recuperação de Senha"),
       centerTitle: true,
@@ -37,17 +53,11 @@ class RecuperarSenhaPage extends StatelessWidget {
             const SizedBox(
               height: 40,
             ),
-            TextFormField(
+            TextField(
               decoration: const InputDecoration(
-                labelText: 'E-mail ou Nome de Usuário',
+                labelText: 'E-mail',
               ),
-              onSaved: (String? value) {
-                // This optional block of code can be used to run
-                // code when the user saves the form.
-              },
-              validator: (String? value) {
-                return (value != null && value.contains('@')) ? 'Do not use the @ char.' : null;
-              },
+              controller: emailController,
             ),
             const SizedBox(
               height: 20,
@@ -60,23 +70,21 @@ class RecuperarSenhaPage extends StatelessWidget {
                     "Redefinir sua senha",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,              //LOGINNNNNNNNNNNNNN
+                      color: Colors.white,
                       fontSize: 20,
                     ),
                     textAlign: TextAlign.center,
                   ),
                 ],
               ),
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => const NovaSenhaPage(
-                      name: 'senha',
-                    )
-                  ),
-                );
+              onPressed: ((){
+                erro = '';
+                setState((){
+                  resetPassword();
+                });
               }),
+            ),
+            Text(erro, style: TextStyle(color: Colors.red, fontSize: 40),)
           ],
         ),
       ),

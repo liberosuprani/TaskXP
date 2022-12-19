@@ -34,7 +34,11 @@ class _CadastroPage extends State<CadastroPage>{
       ok = false;
     }
     if (emailController.text.isEmpty || !emailController.text.contains('@')) {
-      mensagem = 'Email válido';
+      mensagem = 'Email inválido';
+      ok = false;
+    }
+    if (nomeController.text.isEmpty) {
+      mensagem = 'Insira um nome';
       ok = false;
     }
     return ok;
@@ -44,23 +48,22 @@ class _CadastroPage extends State<CadastroPage>{
   void _submitForm(String nome, String email, String senha) async {
     UserCredential userCredential;
     try {
-      userCredential = await _auth.signInWithEmailAndPassword(email: email, password: senha);
+      userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: senha);
+      FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+        'uid' : userCredential.user!.uid,
+        'username' : nome,
+        'email' : email,
+      });
       Navigator.of(context).pop();
     } on FirebaseAuthException catch (error) {
-      if (error.code == 'wrong-password') {
-        print('PIROCAO DURO LISO---------------------------');
+      if (error.code == 'email-already-exists') {
         setState(() {
           mensagem = 'Esse email já está em uso';
         });
       }
-      else {
-        userCredential = await _auth.createUserWithEmailAndPassword(email: email, password: senha);
-        FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
-          'uid' : userCredential.user!.uid,
-          'username' : nome,
-          'email' : email,
-        });
-      }
+    }
+    catch (e) {
+      print(e);
     }
   }
 

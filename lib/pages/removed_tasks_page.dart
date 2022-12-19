@@ -13,9 +13,6 @@ class _RemovedTasksPageState extends State<RemovedTasksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final listaData = Provider.of<Tarefas>(context);
-    final lista = listaData.lixeira;
-
     final appBar = AppBar(
       title: const Text('Lixeira'),
       backgroundColor: Color(0xFF3E3E3E),

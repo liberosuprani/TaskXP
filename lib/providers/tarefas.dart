@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import '../services/FirestoreService.dart';
 import '../models/tarefa.dart';
 
+
+
+/*
 class Tarefas with ChangeNotifier {
 
   final service = FirestoreService();
@@ -87,3 +90,5 @@ class Tarefas with ChangeNotifier {
   }
 
 }
+
+ */

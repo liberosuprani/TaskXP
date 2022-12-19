@@ -46,7 +46,6 @@ class _NovaTarefaState extends State<NovaTarefa> {
 
   @override
   Widget build(BuildContext context) {
-    final lista = Provider.of<Tarefas>(context).itens;
     return StreamBuilder<List<Tarefa>>(
       stream: instance.lerTarefas(),
       builder: (context, streamSnapshot) {

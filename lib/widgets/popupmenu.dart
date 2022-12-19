@@ -37,6 +37,7 @@ class _PopUpMenuState extends State<PopUpMenu> {
     void changeFinalizado(Tarefa t, bool finalizado) {
       t.finalizado = finalizado;
       service.changeItem(t, collectionPath: widget.collectionPath);
+
       if (finalizado) {
         service.removeItem(t.id, collectionPath: 'todayTasks');
         service.adicionarTarefa(t, 'doneTasks');

@@ -15,9 +15,6 @@ class _TodoTasksPageState extends State<TodoTasksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final listaData = Provider.of<Tarefas>(context);
-    final lista = listaData.itens;
-
     final appBar = AppBar(
       title: const Text('A fazer'),
       backgroundColor: Color(0xFF3E3E3E),

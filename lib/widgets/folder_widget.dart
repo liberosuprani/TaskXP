@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:task_xp_app/services/FirestoreService.dart';
 
+import '../models/tarefa.dart';
+
 class FolderWidget extends StatefulWidget {
 
   String pagePath;
@@ -22,68 +24,77 @@ class _FolderWidgetState extends State<FolderWidget> {
   @override
   Widget build(BuildContext context) {
 
+    DateTime now = DateTime.now();
+
+    IconData icone = Icons.question_mark;
+
     if (widget.pagePath == '/all_tasks_page'){
       lengthPath = 'allTasks';
+      icone = Icons.file_copy_outlined;
     }
     if (widget.pagePath == '/today_tasks_page'){
       lengthPath = 'todayTasks';
+      icone = Icons.today;
     }
     if (widget.pagePath == '/done_tasks_page'){
       lengthPath = 'doneTasks';
+      icone = Icons.done;
     }
     if (widget.pagePath == '/removed_tasks_page'){
       lengthPath = 'removedTasks';
+      icone = Icons.delete;
     }
 
     return StreamBuilder<QuerySnapshot>(
-        stream: service.requestCount(collectionPath: lengthPath),
-        builder: (context, snapshot) {
-          return InkWell(
-            onTap: () => Navigator.of(context).pushNamed(
-              '${widget.pagePath}',
-            ),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(width: 8, color: Color(0xFF6178DF)),
-                color: Color(0xFF6B86FF),
-              ),
-              child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 17, horizontal: 15),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Icon(Icons.file_copy_outlined, color: Color(0xFF414746),),
-                        FittedBox(
-                          fit: BoxFit.scaleDown,
-                          alignment: Alignment.topRight,
-                          child: Text(
-                            '${snapshot.data?.size.toString() ?? '0'}', // FALTA AQUI
-                            style: TextStyle(color: Color(0xFF414746), fontSize: 25),
-                          ),
-                        ),
-                      ],
+              stream: service.requestCount(collectionPath: lengthPath),
+              builder: (context, snapshot) {
+                return InkWell(
+                  onTap: () => Navigator.of(context).pushNamed(
+                    '${widget.pagePath}',
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(width: 8, color: Color(0xFF6178DF)),
+                      color: Color(0xFF6B86FF),
                     ),
-                    Spacer(),
-                    Flexible(
-                      child: FittedBox(
-                        fit: BoxFit.scaleDown,
-                        alignment: Alignment.bottomLeft,
-                        child: Text(
-                          '${widget.titulo}',
-                          style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
-                        ),
+                    child: Padding(
+                      padding: EdgeInsets.symmetric(vertical: 17, horizontal: 15),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Icon(icone, color: Color(0xFF414746),),
+                              FittedBox(
+                                fit: BoxFit.scaleDown,
+                                alignment: Alignment.topRight,
+                                child: Text(
+                                  '${snapshot.data?.size.toString() ?? '0'}', // FALTA AQUI
+                                  style: TextStyle(color: Color(0xFF414746), fontSize: 25),
+                                ),
+                              ),
+                            ],
+                          ),
+                          Spacer(),
+                          Flexible(
+                            child: FittedBox(
+                              fit: BoxFit.scaleDown,
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                '${widget.titulo}',
+                                style: TextStyle(color: Colors.white, fontSize: 25, fontWeight: FontWeight.bold),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                );
+              }
           );
         }
-    );
-  }
-}
+      }
+

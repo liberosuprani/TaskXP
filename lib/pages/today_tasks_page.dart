@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import '../widgets/my_fab.dart';
-import '../providers/tarefas.dart';
 import '../widgets/lista_de_tarefas.dart';
 import '../widgets/chart.dart';
 import '../widgets/popupmenu.dart';
@@ -15,14 +13,11 @@ class _TodayTasksPageState extends State<TodayTasksPage> {
 
   @override
   Widget build(BuildContext context) {
-    final listaData = Provider.of<Tarefas>(context);
-    final lista = listaData.itens;
-
     final appBar = AppBar(
       title: const Text('Hoje'),
       backgroundColor: Color(0xFF3E3E3E),
       actions: [
-        PopUpMenu(),
+        PopUpMenu(collectionPath: 'todayTasks'),
       ],
     );
     return SafeArea(

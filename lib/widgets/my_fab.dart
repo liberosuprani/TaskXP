@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import '../providers/tarefas.dart';
 import 'nova_tarefa.dart';
 
 class MyFab extends StatelessWidget {
@@ -8,7 +6,6 @@ class MyFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final listaData = Provider.of<Tarefas>(context);
 
     return FloatingActionButton(
       child: const Icon(Icons.add),

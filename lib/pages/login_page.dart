@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import '../services/FirestoreService.dart';
 import 'cadastro_page.dart';
 import 'recuperar_senha_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -116,14 +117,7 @@ class _LoginPageState extends State<LoginPage> {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => RecuperarSenhaPage(
-                  name: 'Recuperar Senha',
-                )
-            ),
-          );
+          Navigator.of(context).pushNamed('/forgot_password');
         },
         child: const Text(
           'Esqueceu a senha?',
@@ -305,6 +299,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    FirestoreService().userUid = ' ';
     return Scaffold(
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: SystemUiOverlayStyle.light,

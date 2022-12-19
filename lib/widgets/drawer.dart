@@ -7,8 +7,8 @@ class MyDrawer extends StatelessWidget {
 
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final _userUid = FirebaseAuth.instance.currentUser!.uid;
-  final usersRef = FirebaseFirestore.instance.collection('/users');
+  final FirebaseFirestore db = FirebaseFirestore.instance;
+  final String _userUid = FirebaseAuth.instance.currentUser!.uid;
 
   @override
   Widget build(BuildContext context) {
@@ -18,13 +18,25 @@ class MyDrawer extends StatelessWidget {
         child: ListView(
           padding: EdgeInsets.zero,
           children: [
-            UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: Color(0xFF3E3E3E)),
-              currentAccountPicture: CircleAvatar(
-                child: Text('Imagem'),
-              ),
-              accountName: Text('nome'),
-              accountEmail: Text('nome@gmail.com'),
+            FutureBuilder<DocumentSnapshot>(
+              future: db.collection('users').doc(_userUid).get(),
+              builder: (context, snapshot) {
+                if(snapshot.hasData) {
+                  return UserAccountsDrawerHeader(
+                    decoration: BoxDecoration(color: Color(0xFF3E3E3E)),
+
+                    currentAccountPicture: CircleAvatar(
+                      child: Icon(Icons.person),
+                    ),
+
+                    accountName: Text('${snapshot.data!['username']}'),
+                    accountEmail: Text('${snapshot.data!['email']}'),
+                  );
+                }
+                else {
+                  return CircularProgressIndicator();
+                }
+              }
             ),
             Column(children: [
               ListTile(
@@ -43,23 +55,13 @@ class MyDrawer extends StatelessWidget {
                 },
               ),
               ListTile(
-                leading: const Icon(Icons.task, color: Colors.white),
+                leading: const Icon(Icons.file_copy_outlined, color: Colors.white),
                 title: const Text('Todas as tarefas', style: TextStyle(color: Colors.white),),
                 onTap: () {
                   if (!(_scaffoldKey.currentState?.isDrawerOpen == true)){
                     Navigator.of(context).pop();
                   }
                   Navigator.pushNamed(context, '/all_tasks_page');
-                },
-              ),
-              ListTile(
-                leading: Icon(Icons.hourglass_bottom, color: Colors.white),
-                title: Text('Tarefas a fazer', style: TextStyle(color: Colors.white),),
-                onTap: () {
-                  if (!(_scaffoldKey.currentState?.isDrawerOpen == true)){
-                    Navigator.of(context).pop();
-                  }
-                  Navigator.pushNamed(context, '/todo_tasks_page');
                 },
               ),
               ListTile(

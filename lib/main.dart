@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:task_xp_app/pages/recuperar_senha_page.dart';
 import 'package:task_xp_app/services/FirestoreService.dart';
 import './pages/removed_tasks_page.dart';
 import './pages/all_tasks_page.dart';
@@ -24,10 +25,11 @@ void main() async {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider.value(value: Tarefas()),
-        StreamProvider.value(value: FirestoreService().lerTarefas(collectionPath: '/tasks'), initialData: null,)
+        StreamProvider.value(value: FirestoreService().lerTarefas(collectionPath: 'penis'),
+          initialData: null,)
       ],
       child: MaterialApp(
         home: StreamBuilder(stream: FirebaseAuth.instance.authStateChanges(), builder: (ctx, userSnapshot) {
@@ -52,6 +54,7 @@ class MyApp extends StatelessWidget {
           '/done_tasks_page' : (context) => DoneTasksPage(),
           '/todo_tasks_page' : (context) => TodoTasksPage(),
           '/removed_tasks_page' : (context) => RemovedTasksPage(),
+          '/forgot_password' : (context) => RecuperarSenhaPage(),
         },
       ),
     );
