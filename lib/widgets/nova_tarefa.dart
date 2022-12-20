@@ -29,7 +29,7 @@ class _NovaTarefaState extends State<NovaTarefa> {
       context: context,
       initialDate: DateTime.now(),
       firstDate: DateTime.now(),
-      lastDate: DateTime(2023),
+      lastDate: DateTime(DateTime.now().year+7),
     );
     if (dataSelecionada == null) {
       return dataAnterior;

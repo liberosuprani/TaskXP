@@ -87,7 +87,7 @@ class _CadastroPage extends State<CadastroPage>{
           }
         },
         style:ElevatedButton.styleFrom(
-          backgroundColor: Colors.indigo,
+          primary: Colors.indigo,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),

@@ -85,7 +85,7 @@ class _RecuperarSenhaPageState extends State<RecuperarSenhaPage> {
                 });
               }),
               style:ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF3A5FCD),
+                primary: Color(0xFF3A5FCD),
               ),
             ),
 

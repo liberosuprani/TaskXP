@@ -253,7 +253,7 @@ class _LoginPageState extends State<LoginPage> {
           }
         },
         style:ElevatedButton.styleFrom(
-          backgroundColor: Colors.indigo,
+          primary: Colors.indigo,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10.0),
           ),
