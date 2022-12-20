@@ -64,7 +64,6 @@ class _ListItemState extends State<ListItem> {
                       db.removeItem(widget.t.id);
                     },
                     icon: Icons.delete,
-                    label: 'Deletar',
                     backgroundColor: Colors.red,
                     flex: 2,
                   ),
@@ -75,7 +74,7 @@ class _ListItemState extends State<ListItem> {
                             .collectionPath,); //////////////
                       });
                     },
-                    icon: Icons.more_horiz,
+                    icon: Icons.edit,
                     backgroundColor: Colors.blueGrey,
                     flex: 2,
                   ),
@@ -113,7 +112,6 @@ class _ListItemState extends State<ListItem> {
                   text: TextSpan(
                       children: <TextSpan> [
                         TextSpan(text: widget.t.descricao, style: TextStyle(fontSize: 12.5)),
-
                         TextSpan(text: widget.t.descricao == '' ? '' : '\n'),
                         TextSpan(text: DateFormat('dd/MM/yyyy').format(widget.t.data),
                           style: TextStyle(fontSize: 12.5, color: corData(widget.t, DateTime.now()),),),
